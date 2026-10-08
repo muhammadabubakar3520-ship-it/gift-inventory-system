@@ -2,9 +2,9 @@
   "note": "TEST logins for automated tests only (not real passwords).",
   "promoters": [
     {
-      "name": "Wasif Ali",
-      "email": "WasifAli@company.com",
-      "password": "TestWasifA1"
+      "name": "Admin",
+      "email": "admin@company.com",
+      "password": "Admin123@"
     }
   ]
 }
