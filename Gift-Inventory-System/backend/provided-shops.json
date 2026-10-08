@@ -1,0 +1,70 @@
+{
+  "note": "Shops provided by the admin after the old shops were removed (2026-10-07). Added once to saved data with new QR codes; each gift is stocked to gift_stock and every shop gets allocate_each units of each gift.",
+  "gift_stock": 35,
+  "allocate_each": 5,
+  "shops": [
+    {
+      "shop_id": "PK413451",
+      "shop_name": "Aa Trading",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "WasifAli@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413432",
+      "shop_name": "Cell Master",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "M.Zeeshan@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413407",
+      "shop_name": "Gulberg Mobile",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "M.Adnan@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413401",
+      "shop_name": "Mobile Master Hafeez Center",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "WaleedKhan@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK401666",
+      "shop_name": "Mobile Master 2",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "AqleemaParas@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413487",
+      "shop_name": "Mobile Store Hafeez Center",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "UsamaBashir@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413423",
+      "shop_name": "Rabta Mobile",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "Shop 12 Ground Floor",
+      "promoter_email": "TemoorHussain@company.com",
+      "status": "active"
+    }
+  ]
+}
