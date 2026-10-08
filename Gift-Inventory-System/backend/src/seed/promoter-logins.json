@@ -6,6 +6,11 @@
       "email": "WasifAli@company.com",
       "password_hash": "pbkdf2$210000$4a10b40e990a236a0c1b6649ad7a682f$03da36f9cfa0362758d052230084e490fbf165e55396690a685491ede0e5e294"
     },
+     {
+      "name": "Admin",
+      "email": "admin@company.com",
+      "password_hash": "pbkdf2$210000$4a10b40e990a236a0c1b6649ad7a682f$03da36f9cfa0362758d052230084e490fbf165e55396690a685491ede0e5e294"
+    },
     {
       "name": "M.Zeeshan",
       "email": "M.Zeeshan@company.com",
