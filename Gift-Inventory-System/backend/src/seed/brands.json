@@ -1,0 +1,10 @@
+{
+  "note": "Mobile brands for the provided phone models. The models themselves (item codes and names) come from starting-data.json and are not changed.",
+  "brands": [
+    {
+      "brand_code": "BR001",
+      "brand_name": "Infinix",
+      "models": ["X6887 256+8", "X6877 256+12", "X6878 256+8", "X6879 256+8", "X6895B 128+6", "X6896 128+8"]
+    }
+  ]
+}

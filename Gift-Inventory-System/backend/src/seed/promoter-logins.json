@@ -1,0 +1,40 @@
+{
+  "note": "Fixed promoter logins. Only one-way PBKDF2 hashes are stored here, never the passwords. To change a login, ask for a new hash to be generated (npm run hash-password).",
+  "promoters": [
+    {
+      "name": "Wasif Ali",
+      "email": "WasifAli@company.com",
+      "password_hash": "pbkdf2$210000$4a10b40e990a236a0c1b6649ad7a682f$03da36f9cfa0362758d052230084e490fbf165e55396690a685491ede0e5e294"
+    },
+    {
+      "name": "M.Zeeshan",
+      "email": "M.Zeeshan@company.com",
+      "password_hash": "pbkdf2$210000$86583731bc9c704d941d18bd4f17dc0f$7552728955bc71b24e7f1b7365dc153d99487a4aa0d0ac2d710072054eb7b9fb"
+    },
+    {
+      "name": "M.Adnan",
+      "email": "M.Adnan@company.com",
+      "password_hash": "pbkdf2$210000$db91f074823f4466d2f7a215213c1b05$568bef0535e52464819b657fa09e207d9345013c481ed4ba53df3e61359eef11"
+    },
+    {
+      "name": "Waleed Khan",
+      "email": "WaleedKhan@company.com",
+      "password_hash": "pbkdf2$210000$d245170c151bade87da51d6d545a6f31$6c0a00cfc8d0b7ae8160d4a1f6691cb6e95096e0423512e83ca08ca183c865af"
+    },
+    {
+      "name": "Aqleema Paras",
+      "email": "AqleemaParas@company.com",
+      "password_hash": "pbkdf2$210000$1ce75a5c8656ab584a3dec346ef3ca3b$58545fcb2ce9c53da166bd4195615660125037d69bfe9ea25fa858a06e650cec"
+    },
+    {
+      "name": "Usama Bashir",
+      "email": "UsamaBashir@company.com",
+      "password_hash": "pbkdf2$210000$2d7ca0702e58be10335222b75be46e5b$25122fb209d88867f47292b7d8255e65202bf0d59f78afec92fbc19963da28e2"
+    },
+    {
+      "name": "Temoor Hussain",
+      "email": "TemoorHussain@company.com",
+      "password_hash": "pbkdf2$210000$5225f78206e6487a86cde939277dc840$c0916ae85eb92a84a53e4d1d62994024e06c7cbcb4c53719e6f4662588197383"
+    }
+  ]
+}

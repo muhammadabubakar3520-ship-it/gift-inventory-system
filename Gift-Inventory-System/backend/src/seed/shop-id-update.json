@@ -1,0 +1,40 @@
+{
+  "note": "Real Shop IDs for the provided shops (from the user's shop list, 2026-10-07). Used to update databases created with the old SHP-000x IDs.",
+  "shops": [
+    {
+      "from": "SHP-0001",
+      "shop_name": "Aa Trading",
+      "to": "PK413451"
+    },
+    {
+      "from": "SHP-0002",
+      "shop_name": "Cell Master",
+      "to": "PK413432"
+    },
+    {
+      "from": "SHP-0003",
+      "shop_name": "Gulberg Mobile",
+      "to": "PK413407"
+    },
+    {
+      "from": "SHP-0004",
+      "shop_name": "Mobile Master Hafeez Center",
+      "to": "PK413401"
+    },
+    {
+      "from": "SHP-0005",
+      "shop_name": "Mobile Master 2",
+      "to": "PK401666"
+    },
+    {
+      "from": "SHP-0006",
+      "shop_name": "Mobile Store Hafeez Center",
+      "to": "PK413487"
+    },
+    {
+      "from": "SHP-0007",
+      "shop_name": "Rabta Mobile",
+      "to": "PK413423"
+    }
+  ]
+}

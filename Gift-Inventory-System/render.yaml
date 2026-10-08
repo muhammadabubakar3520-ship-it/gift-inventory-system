@@ -1,0 +1,31 @@
+# Render Blueprint for the BACKEND (Node.js + Express API). The database is MongoDB Atlas,
+# the frontend is on Vercel. Render: New → Blueprint → choose this repository.
+services:
+  - type: web
+    name: gift-inventory-api
+    runtime: node
+    rootDir: backend
+    plan: starter            # always on. "free" also works but sleeps after 15 min without visits (first request then takes ~1 min)
+    region: singapore        # closest Render region to Pakistan; create the Atlas cluster in the same region
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "true"
+      - key: TZ
+        value: Asia/Karachi
+      - key: MONGODB_URI
+        sync: false          # Render asks for it: your MongoDB Atlas connection string
+      - key: JWT_SECRET
+        generateValue: true  # long random secret made by Render
+      - key: FRONTEND_URL
+        sync: false          # Render asks for it: https://YOUR-VERCEL-DOMAIN.vercel.app
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false

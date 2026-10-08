@@ -1,0 +1,31 @@
+{
+  "name": "gift-inventory-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gift Inventory & Shop Sales Management \u2014 REST API (Node.js, Express, MongoDB Atlas, Mongoose, JWT, Socket.IO)",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20.10"
+  },
+  "scripts": {
+    "dev": "node --watch-path=src src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test --test-concurrency=1 \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.5",
+    "multer": "^2.4.0",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}

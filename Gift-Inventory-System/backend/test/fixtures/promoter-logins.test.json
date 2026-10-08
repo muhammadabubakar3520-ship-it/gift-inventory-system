@@ -1,0 +1,40 @@
+{
+  "note": "TEST logins for automated tests only (not real passwords).",
+  "promoters": [
+    {
+      "name": "Wasif Ali",
+      "email": "WasifAli@company.com",
+      "password": "TestWasifA1"
+    },
+    {
+      "name": "M.Zeeshan",
+      "email": "M.Zeeshan@company.com",
+      "password": "TestMZeesh1"
+    },
+    {
+      "name": "M.Adnan",
+      "email": "M.Adnan@company.com",
+      "password": "TestMAdnan1"
+    },
+    {
+      "name": "Waleed Khan",
+      "email": "WaleedKhan@company.com",
+      "password": "TestWaleed1"
+    },
+    {
+      "name": "Aqleema Paras",
+      "email": "AqleemaParas@company.com",
+      "password": "TestAqleem1"
+    },
+    {
+      "name": "Usama Bashir",
+      "email": "UsamaBashir@company.com",
+      "password": "TestUsamaB1"
+    },
+    {
+      "name": "Temoor Hussain",
+      "email": "TemoorHussain@company.com",
+      "password": "TestTemoor1"
+    }
+  ]
+}

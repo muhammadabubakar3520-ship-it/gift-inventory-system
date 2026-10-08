@@ -1,0 +1,93 @@
+{
+  "promoters": [
+    {
+      "name": "Wasif Ali",
+      "email": "wasif@company.com"
+    },
+    {
+      "name": "M.Zeeshan",
+      "email": "zeeshan@company.com"
+    },
+    {
+      "name": "M.Adnan",
+      "email": "adnan@company.com"
+    },
+    {
+      "name": "Waleed Khan",
+      "email": "waleed@company.com"
+    },
+    {
+      "name": "Aqleema Paras",
+      "email": "aqleema@company.com"
+    },
+    {
+      "name": "Usama Bashir",
+      "email": "usama.bashir@company.com"
+    },
+    {
+      "name": "Temoor Hussain",
+      "email": "temoor.hussain@company.com"
+    }
+  ],
+  "shops": [],
+  "gifts": [
+    {
+      "gift_name": "Infinix Cap",
+      "category": "Apparel",
+      "description": "Black cap with white Infinix logo",
+      "unit": "pcs",
+      "total_quantity": 20,
+      "image": "cap.jpg"
+    },
+    {
+      "gift_name": "Infinix Water Bottle",
+      "category": "Drinkware",
+      "description": "Black sports water bottle with carry handle, white Infinix logo",
+      "unit": "pcs",
+      "total_quantity": 20,
+      "image": "bottle.jpg"
+    },
+    {
+      "gift_name": "Infinix Mug",
+      "category": "Drinkware",
+      "description": "White ceramic mug with black Infinix logo",
+      "unit": "pcs",
+      "total_quantity": 20,
+      "image": "mug.jpg"
+    },
+    {
+      "gift_name": "Infinix Tumbler",
+      "category": "Drinkware",
+      "description": "Black insulated travel tumbler with lid, white Infinix logo",
+      "unit": "pcs",
+      "total_quantity": 20,
+      "image": "tumbler.jpg"
+    }
+  ],
+  "models": [
+    {
+      "item_code": "X6887 256+8",
+      "model_name": "Note Edge"
+    },
+    {
+      "item_code": "X6877 256+12",
+      "model_name": "Note 60 Ultra"
+    },
+    {
+      "item_code": "X6878 256+8",
+      "model_name": "NOTE 60 Pro"
+    },
+    {
+      "item_code": "X6879 256+8",
+      "model_name": "NOTE 60"
+    },
+    {
+      "item_code": "X6895B 128+6",
+      "model_name": "Hot 70"
+    },
+    {
+      "item_code": "X6896 128+8",
+      "model_name": "Hot 70 Pro 5G"
+    }
+  ]
+}
