@@ -21,6 +21,9 @@ import { usePageMeta } from '../../context/PageMetaContext';
 import { useLookups } from '../../context/LookupsContext';
 import { useHoldLive } from '../../context/SyncContext';
 
+/** Promoters of a shop as [{ id, name, user_code }]. Works with one promoter and with several (a shop can be shared). */
+const promotersOf = (s) => (Array.isArray(s.promoters) && s.promoters.length ? s.promoters : s.promoter_name ? [{ id: s.promoter_id, name: s.promoter_name, user_code: s.promoter_code }] : []);
+
 /* ------------------------------ Shop list ------------------------------ */
 export function ShopList({ openNew = false }) {
   usePageMeta(openNew ? 'Add Shop' : 'All Shops', 'Shops');
@@ -50,7 +53,7 @@ export function ShopList({ openNew = false }) {
     { label: 'Shop ID', sort: 'shop_id', render: (r) => <Link className="mono" to={`/admin/shops/${r.shop_id}`}><b>{r.shop_id}</b></Link> },
     { label: 'Shop', sort: 'shop_name', render: (r) => <><div className="cell-main">{r.shop_name}</div>{r.address ? <div className="cell-sub">{r.address}</div> : null}</> },
     { label: 'City / Market', sort: 'city', render: (r) => <><div>{r.city_name}</div><div className="cell-sub">{r.market_name}</div></> },
-    { label: 'Promoter', render: (r) => r.promoter_name || <span className="muted">Not assigned</span> },
+    { label: 'Promoter', render: (r) => { const ps = promotersOf(r); return ps.length ? ps.map((p) => <div key={p.id ?? p.name}>{p.name}</div>) : <span className="muted">Not assigned</span>; } },
     { label: 'Allocated', num: true, key: 'allocated' },
     { label: 'Gifts given', num: true, key: 'distributed', sort: 'distributed' },
     { label: 'Remaining', num: true, sort: 'remaining', render: (r) => <StockCell remaining={r.remaining} allocated={r.allocated} /> },
@@ -63,7 +66,9 @@ export function ShopList({ openNew = false }) {
     const v = bulkPromoter;
     if (!v) return toast('Choose a promoter', 'warn');
     try {
-      await api('/shops/bulk-assign', { method: 'POST', body: { ids: [...selected], promoter_id: v === 'none' ? null : v } });
+      // a promoter is ADDED to the selected shops (promoters already there stay, so a shop can be shared);
+      // "Remove all promoters" clears every promoter from the selected shops
+      await api('/shops/bulk-assign', { method: 'POST', body: v === 'none' ? { ids: [...selected], promoter_id: null, mode: 'replace' } : { ids: [...selected], promoter_id: v, mode: 'add' } });
       toast(`${n} shop(s) updated`, 'ok');
       onSelect(new Set());
       loadLookups();
@@ -128,7 +133,7 @@ export function ShopList({ openNew = false }) {
         <div id="bulk">
           {n > 0 && (
             <div className="bulkbar"><b>{n} selected</b>
-              <select className="select sm" id="bulkPromoter" style={{ width: 'auto' }} value={bulkPromoter} onChange={(e) => setBulkPromoter(e.target.value)}>{promoterOpts(lk, 'Assign promoter…', true, '')}<option value="none">Remove promoter</option></select>
+              <select className="select sm" id="bulkPromoter" style={{ width: 'auto' }} value={bulkPromoter} onChange={(e) => setBulkPromoter(e.target.value)}>{promoterOpts(lk, 'Add promoter…', true, '')}<option value="none">Remove all promoters</option></select>
               <BusyButton className="btn sm" id="bulkAssign" onClick={bulkAssign}>Apply</BusyButton>
               <button className="btn sm" id="bulkQr" onClick={() => navigate('/admin/shops/qr?ids=' + [...selected].join(','))}><Icon name="qr" />Print QR labels</button>
               <span className="spacer" /><button className="link-btn" id="bulkClear" onClick={() => { onSelect(new Set()); list.reload(); }}>Clear selection</button></div>
@@ -205,7 +210,7 @@ export function ShopDetail() {
               <dt>City</dt><dd>{s.city_name}</dd>
               <dt>Market</dt><dd>{s.market_name}</dd>
               <dt>Address</dt><dd>{s.address || '—'}</dd>
-              <dt>Promoter</dt><dd>{s.promoter_name ? <>{s.promoter_name} <span className="muted mono">{s.promoter_code}</span></> : <span className="muted">Not assigned</span>}</dd>
+              <dt>{promotersOf(s).length > 1 ? 'Promoters' : 'Promoter'}</dt><dd>{promotersOf(s).length ? promotersOf(s).map((p) => <div key={p.id ?? p.name}>{p.name} <span className="muted mono">{p.user_code}</span></div>) : <span className="muted">Not assigned</span>}</dd>
               <dt>Status</dt><dd><Chip status={s.status} /></dd>
               <dt>Date added</dt><dd>{fmt.date(s.created_at)}</dd>
             </dl>
