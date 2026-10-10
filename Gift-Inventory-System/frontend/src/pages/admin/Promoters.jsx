@@ -107,6 +107,9 @@ export function AssignShops() {
   return <AssignBody key={qp} promoters={data.promoters} initialShops={data.shops} initialPromoter={qp} />;
 }
 
+/** Promoters of a shop as id strings. Works with one promoter (promoter_id) and with several (promoter_ids). */
+const shopPids = (x) => (Array.isArray(x.promoter_ids) && x.promoter_ids.length ? x.promoter_ids : x.promoter_id ? [x.promoter_id] : []).map(String);
+
 function AssignBody({ promoters, initialShops, initialPromoter }) {
   const { lk, lkRef } = useLookups();
   const [current, setCurrent] = useState(initialPromoter || (promoters[0] ? String(promoters[0].id) : ''));
@@ -117,24 +120,25 @@ function AssignBody({ promoters, initialShops, initialPromoter }) {
   if (!promoters.length) {
     return (
       <>
-        <PageHead title="Assign Shops" desc="Choose a promoter, then tick the shops they work at. A promoter can only record sales at assigned shops." />
+        <PageHead title="Assign Shops" desc="Choose a promoter, then tick the shops they work at. A shop can have more than one promoter. A promoter can only record sales at assigned shops." />
         <EmptyState title="No active promoters" text="Add promoters first." action={<Link className="btn primary" to="/admin/promoters">Go to promoters</Link>} />
       </>
     );
   }
 
   const p = promoters.find((x) => String(x.id) === current);
-  const count = (id) => shops.filter((s) => String(s.promoter_id) === String(id)).length;
+  const count = (id) => shops.filter((s) => shopPids(s).includes(String(id))).length;
   const s = st.search.toLowerCase();
   const rows = shops.filter((x) => (!s || `${x.shop_id} ${x.shop_name} ${x.market_name}`.toLowerCase().includes(s)) && (!st.city_id || String(x.city_id) === st.city_id) && (!st.market_id || String(x.market_id) === st.market_id) &&
-    (st.show === 'all' || (st.show === 'mine' && String(x.promoter_id) === current) || (st.show === 'none' && !x.promoter_id) || (st.show === 'other' && x.promoter_id && String(x.promoter_id) !== current)));
-  const mine = shops.filter((x) => String(x.promoter_id) === current).length;
+    (st.show === 'all' || (st.show === 'mine' && shopPids(x).includes(current)) || (st.show === 'none' && !shopPids(x).length) || (st.show === 'other' && shopPids(x).some((id) => id !== current))));
+  const mine = shops.filter((x) => shopPids(x).includes(current)).length;
 
-  const save = async (pid) => {
-    const moving = shops.filter((x) => sel.has(x.id) && x.promoter_id && String(x.promoter_id) !== String(pid || ''));
-    if (pid && moving.length && !(await confirmDialog({ title: 'Change assignment?', message: <>{moving.length} selected shop(s) are assigned to another promoter. They will move to <b>{p.name}</b>.</>, confirmText: 'Move shops' }))) return;
+  // mode 'add': this promoter is added to the selected shops (promoters already there stay); 'remove': only this promoter is taken off
+  const save = async (mode) => {
+    const shared = shops.filter((x) => sel.has(x.id) && shopPids(x).some((id) => id !== current));
+    if (mode === 'add' && shared.length && !(await confirmDialog({ title: 'Share these shops?', message: <>{shared.length} selected shop(s) already have another promoter. <b>{p.name}</b> will be added and the other promoter stays, so they share the shop.</>, confirmText: 'Add promoter' }))) return;
     try {
-      const r = await api('/shops/bulk-assign', { method: 'POST', body: { ids: [...sel], promoter_id: pid || null } });
+      const r = await api('/shops/bulk-assign', { method: 'POST', body: { ids: [...sel], promoter_id: current, mode } });
       toast(`${r.updated} shop(s) updated`, 'ok'); setSel(new Set());
       const fresh = (await api('/shops', { query: { all: '1' } })).rows;
       setShops(fresh);
@@ -146,7 +150,7 @@ function AssignBody({ promoters, initialShops, initialPromoter }) {
 
   return (
     <>
-      <PageHead title="Assign Shops" desc="Choose a promoter, then tick the shops they work at. A promoter can only record sales at assigned shops." />
+      <PageHead title="Assign Shops" desc="Choose a promoter, then tick the shops they work at. A shop can have more than one promoter. A promoter can only record sales at assigned shops." />
       <div className="assign-grid">
         <section className="panel"><div className="panel-h"><h2>Promoters</h2></div>
           <div className="assign-people" id="aPeople">
@@ -168,13 +172,13 @@ function AssignBody({ promoters, initialShops, initialPromoter }) {
           </div>
           <div id="aBar">{n > 0 && p && (
             <div className="bulkbar"><b>{n} selected</b>
-              <BusyButton className="btn sm primary" id="aAssign" busyText="Saving…" onClick={() => save(current)}><Icon name="link" />Assign to {p.name}</BusyButton>
-              <BusyButton className="btn sm" id="aUn" busyText="Saving…" onClick={() => save(null)}>Unassign</BusyButton><span className="spacer" /><button className="link-btn" id="aClr" onClick={() => setSel(new Set())}>Clear selection</button></div>
+              <BusyButton className="btn sm primary" id="aAssign" busyText="Saving…" onClick={() => save('add')}><Icon name="link" />Assign to {p.name}</BusyButton>
+              <BusyButton className="btn sm" id="aUn" busyText="Saving…" onClick={() => save('remove')}>Unassign {p.name}</BusyButton><span className="spacer" /><button className="link-btn" id="aClr" onClick={() => setSel(new Set())}>Clear selection</button></div>
           )}</div>
           <div id="aList">
             <DataTable rows={rows} selectable selected={sel} onSelect={setSel} cols={[
               { label: 'Shop ID', render: (x) => <b className="mono">{x.shop_id}</b> }, { label: 'Shop', key: 'shop_name' }, { label: 'City', key: 'city_name' }, { label: 'Market', key: 'market_name' },
-              { label: 'Assigned to', render: (x) => (String(x.promoter_id) === current ? <span className="chip approved">{x.promoter_name}</span> : x.promoter_name ? <span>{x.promoter_name}</span> : <span className="muted">Unassigned</span>) },
+              { label: 'Assigned to', render: (x) => (shopPids(x).includes(current) ? <span className="chip approved">{x.promoter_name}</span> : x.promoter_name ? <span>{x.promoter_name}</span> : <span className="muted">Unassigned</span>) },
               { label: 'Status', render: (x) => <Chip status={x.status} /> },
             ]} empty={<EmptyState title="No shops match" text="" />} />
           </div>
