@@ -1,5 +1,6 @@
+
 {
-  "note": "Only old-ID mappings with exact shop-name matches in the updated spreadsheet are included. No other old-to-new IDs were guessed.",
+  "note": "Mappings from previously known SHP IDs to current shop IDs. Other mappings are omitted because the latest Excel sheet does not specify the old IDs.",
   "shops": [
     {
       "from": "SHP-0002",
