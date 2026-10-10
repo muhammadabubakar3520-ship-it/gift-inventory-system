@@ -27,7 +27,7 @@ const api = (function () {
   const TYPES = {
     shops: {
       title: 'Shops', entity: 'shop',
-      help: 'Shop ID is your own shop code (e.g. PK413451). Leave it blank to get an automatic ID. A row with an existing Shop ID updates that shop. With no Shop ID, a shop with the same name, city and market is updated (use this to assign promoters). New cities and markets are created. Promoter ID can be the promoter code (PRM-001), email or name.',
+      help: 'Shop ID is your own shop code (e.g. PK413451). Leave it blank to get an automatic ID. A row with an existing Shop ID updates that shop. To give a shop two promoters, repeat its Shop ID on another row with the second promoter. With no Shop ID, a shop with the same name, city and market is updated (use this to assign promoters). New cities and markets are created. Promoter ID can be the promoter code (PRM-001), email or name.',
       columns: [
         { key: 'shop_id', label: 'Shop ID', aliases: ['shopid', 'shopcode', 'id'] },
         { key: 'shop_name', label: 'Shop Name', aliases: ['shopname', 'name', 'shop'], required: true },
@@ -164,6 +164,7 @@ const api = (function () {
   V.shops = (rows, ctx) => {
     const ids = new Set(); const names = new Set();
     const newPromoters = new Map();
+    const shopPromoters = new Map(); // Shop ID -> promoters named for it so far in this file
     const out0 = rows.map((r) => {
       const m = [];
       const code = text(r.shop_id, 'Shop ID', m, { max: 20 });
@@ -176,11 +177,11 @@ const api = (function () {
       const sameName = !code && name && city && market ? ctx.shops.filter((s) => ieq(s.shop_name, name) && ieq(s.city_name, city) && ieq(s.market_name, market)) : [];
       const existing = code ? ctx.shops.find((s) => ieq(s.shop_id, code)) : sameName.length === 1 ? sameName[0] : null;
       const st = status(r.status, m, existing ? existing.status : 'active');
-      if (code) {
-        if (ids.has(code.toUpperCase())) err(m, `Shop ID ${code} appears more than once in the file`);
-        ids.add(code.toUpperCase());
-      }
-      if (name && city && market) {
+      // The same Shop ID on a later row = one more promoter for that shop (two promoters can share a shop).
+      const repeat = !!code && ids.has(code.toUpperCase());
+      if (code) ids.add(code.toUpperCase());
+      if (repeat && !txt(r.promoter)) err(m, `Shop ID ${code} appears more than once in the file. A repeated row must name another promoter for that shop.`);
+      if (!repeat && name && city && market) {
         const key = `${city}|${market}|${name}`.toLowerCase();
         const clash = ctx.shops.find((s) => ieq(s.shop_name, name) && ieq(s.city_name, city) && ieq(s.market_name, market) && (!existing || s.id !== existing.id));
         if (clash) err(m, `A shop named "${name}" already exists in ${market} (${clash.shop_id})`);
@@ -203,6 +204,19 @@ const api = (function () {
           warn(m, `New promoter "${info.name}" will be created (password ${DEFAULT_PASSWORD})`);
         } else err(m, `Promoter "${pcell}" not found. Use the Promoter ID (e.g. PRM-001), email or exact name — or tick "Create missing promoters".`);
       }
+      if (repeat) {
+        // shop details come from the first row of this Shop ID; this row only adds its promoter
+        const key = code.toUpperCase();
+        const pkey = promoter ? (promoter.newKey ? `new:${promoter.newKey}` : `id:${promoter.id}`) : null;
+        const listed = shopPromoters.get(key) || new Set();
+        const dup = pkey && listed.has(pkey);
+        if (pkey) { listed.add(pkey); shopPromoters.set(key, listed); }
+        if (promoter && dup) m.push({ level: 'info', text: `${promoter.name} is already listed for shop ${key} in this file` });
+        else if (promoter) warn(m, `${promoter.name} will be added as another promoter of shop ${key}`);
+        return { line: r.__line, messages: m, action: dup ? 'skip' : 'assign',
+          data: { id: existing ? existing.id : null, shop_id: key, shop_name: name, city, market, address, promoter, status: st } };
+      }
+      if (code && promoter) shopPromoters.set(code.toUpperCase(), new Set([promoter.newKey ? `new:${promoter.newKey}` : `id:${promoter.id}`]));
       if (existing) warn(m, code ? `Existing shop ${existing.shop_id} will be updated` : `Existing shop ${existing.shop_id} (same name and market) will be updated`);
       return { line: r.__line, messages: m, action: existing ? 'update' : 'create',
         data: { id: existing ? existing.id : null, shop_id: code ? code.toUpperCase() : null, shop_name: name, city, market, address, promoter, status: st } };
