@@ -252,10 +252,19 @@ G.invTotalsByShop = () => {
   }
   return m;
 };
+/** Ids of the promoters assigned to a shop. Works with one promoter (promoter_id) and with several (promoter_ids). */
+G.shopPromoterIds = (s) => (Array.isArray(s.promoter_ids) && s.promoter_ids.length ? [...new Set(s.promoter_ids.map(Number))] : s.promoter_id ? [Number(s.promoter_id)] : []);
+G.shopHasPromoter = (s, userId) => G.shopPromoterIds(s).includes(Number(userId));
+/** The promoters assigned to a shop (user records that still exist). */
+G.shopPromoters = (s) => G.shopPromoterIds(s).map((id) => G.byId('users', id)).filter(Boolean);
 G.shopView = (s, totals) => {
-  const c = G.byId('cities', s.city_id) || {}; const m = G.byId('markets', s.market_id) || {}; const u = s.promoter_id ? G.byId('users', s.promoter_id) : null;
+  const c = G.byId('cities', s.city_id) || {}; const m = G.byId('markets', s.market_id) || {}; const ps = G.shopPromoters(s);
   const t = (totals || G.invTotalsByShop()).get(s.id) || { allocated: 0, distributed: 0, pending: 0 };
-  return { ...s, city_name: c.city_name, market_name: m.market_name, promoter_name: u ? u.name : null, promoter_code: u ? u.user_code : null,
+  // promoter_id / promoter_name / promoter_code keep working for screens that show one value; with two promoters the names are joined ("A, B")
+  return { ...s, city_name: c.city_name, market_name: m.market_name,
+    promoter_id: ps.length ? ps[0].id : null, promoter_ids: ps.map((u) => u.id),
+    promoter_name: ps.length ? ps.map((u) => u.name).join(', ') : null, promoter_code: ps.length ? ps.map((u) => u.user_code).join(', ') : null,
+    promoters: ps.map((u) => ({ id: u.id, name: u.name, user_code: u.user_code, status: u.status })),
     allocated: t.allocated, distributed: t.distributed, pending: t.pending, remaining: t.allocated - t.distributed };
 };
 G.findShop = (idOrCode) => {
@@ -275,9 +284,9 @@ G.findGift = (idOrCode) => {
 };
 G.invView = (i) => {
   const s = G.byId('shops', i.shop_id); const g = G.byId('gifts', i.gift_id);
-  const c = G.byId('cities', s.city_id) || {}; const m = G.byId('markets', s.market_id) || {}; const u = s.promoter_id ? G.byId('users', s.promoter_id) : null;
-  return { id: i.id, shop_pk: s.id, shop_id: s.shop_id, shop_name: s.shop_name, shop_status: s.status, city_id: s.city_id, market_id: s.market_id, promoter_id: s.promoter_id,
-    city_name: c.city_name, market_name: m.market_name, promoter_name: u ? u.name : null,
+  const c = G.byId('cities', s.city_id) || {}; const m = G.byId('markets', s.market_id) || {}; const ps = G.shopPromoters(s);
+  return { id: i.id, shop_pk: s.id, shop_id: s.shop_id, shop_name: s.shop_name, shop_status: s.status, city_id: s.city_id, market_id: s.market_id, promoter_id: ps.length ? ps[0].id : null, promoter_ids: ps.map((u) => u.id),
+    city_name: c.city_name, market_name: m.market_name, promoter_name: ps.length ? ps.map((u) => u.name).join(', ') : null,
     gift_pk: g.id, gift_id: g.gift_id, gift_name: g.gift_name, unit: g.unit, gift_status: g.status,
     allocated: i.allocated_quantity, distributed: i.distributed_quantity, pending: i.pending_quantity,
     remaining: i.allocated_quantity - i.distributed_quantity, available: i.allocated_quantity - i.distributed_quantity - i.pending_quantity, updated_at: i.updated_at };
