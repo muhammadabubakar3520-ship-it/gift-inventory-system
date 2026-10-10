@@ -1,45 +1,80 @@
 {
-  "note": "Fixed promoter logins. Only one-way PBKDF2 hashes are stored here, never the passwords. To change a login, ask for a new hash to be generated (npm run hash-password).",
+  "note": "Promoter logins generated from the updated spreadsheet. Passwords are stored only as one-way PBKDF2-SHA256 hashes (210000 iterations), never as plain text. To reset a password, generate a new hash with the project's npm run hash-password command.",
   "promoters": [
     {
-      "name": "Wasif Ali",
-      "email": "WasifAli@company.com",
-      "password_hash": "pbkdf2$210000$4a10b40e990a236a0c1b6649ad7a682f$03da36f9cfa0362758d052230084e490fbf165e55396690a685491ede0e5e294"
-    },
-     {
       "name": "Admin",
       "email": "admin@company.com",
       "password_hash": "pbkdf2$210000$4a10b40e990a236a0c1b6649ad7a682f$03da36f9cfa0362758d052230084e490fbf165e55396690a685491ede0e5e294"
     },
     {
-      "name": "M.Zeeshan",
-      "email": "M.Zeeshan@company.com",
-      "password_hash": "pbkdf2$210000$86583731bc9c704d941d18bd4f17dc0f$7552728955bc71b24e7f1b7365dc153d99487a4aa0d0ac2d710072054eb7b9fb"
+      "name": "Abdul Rehman",
+      "email": "AbdulRehman@company.com",
+      "password_hash": "pbkdf2$210000$5ac692e6c4b014165649d7dc7b70b20e$c5bd209ca819d2a3007e83f6671d1be3b29303accb7b919f1f9f1ea964337953"
     },
     {
-      "name": "M.Adnan",
-      "email": "M.Adnan@company.com",
-      "password_hash": "pbkdf2$210000$db91f074823f4466d2f7a215213c1b05$568bef0535e52464819b657fa09e207d9345013c481ed4ba53df3e61359eef11"
+      "name": "Arzoo Majid Ali",
+      "email": "ArzooMajid@company.com",
+      "password_hash": "pbkdf2$210000$d5bc90b42edac63619f3c45cc65374af$57eb57ba2729b417087121be1f677bab92fd2dcc8edb6b73028f4fdeebdb5a83"
+    },
+    {
+      "name": "Azan Nasir",
+      "email": "AzanNasir@company.com",
+      "password_hash": "pbkdf2$210000$fbf9bc6d3bcbfafee9cec31f11eca266$189cc9d8f536eb076fd611b005db7fef7519e4a5b613d19dc390b8ceae3ec746"
+    },
+    {
+      "name": "Bilal Ahmed Butt",
+      "email": "BilalAhmed@company.com",
+      "password_hash": "pbkdf2$210000$af44e877f51aa547bff6276293d581d6$cd6f16e15e0c2105fec27d4e2bab8e2444a134692e66c04330f58a254fdc895b"
+    },
+    {
+      "name": "Danial",
+      "email": "Danial@company.com",
+      "password_hash": "pbkdf2$210000$7c2babcd831e5cc035c8a1dfbde3d4c6$b3c9c1b6483a969426c60b015af441bb2cb7357e17f4babca5192782f3165b5a"
+    },
+    {
+      "name": "M.Khalid",
+      "email": "Khalid@company.com",
+      "password_hash": "pbkdf2$210000$d59766ecc671991144beb75272f49a5a$b1314a2481c6e765f21e1e1e7b25fd83725534ed970972ad6dd34acab630083f"
+    },
+    {
+      "name": "M.Zeeshan",
+      "email": "Zeeshan@company.com",
+      "password_hash": "pbkdf2$210000$94eda5eb062b3e9c7f69aef132bfeed6$a55d0d5ebdbbb588a18331517f663e4cb117bb363ace9fa54b05b6cbe9ac3d4c"
+    },
+    {
+      "name": "Mubashir",
+      "email": "Mubashir@company.com",
+      "password_hash": "pbkdf2$210000$45568e5489a6dd343a6e51bd3339f5c2$efdc1a939872360e73d32b17a7eaa887c5bbf14b866e323aa738a3d68c26cec4"
+    },
+    {
+      "name": "Muhammad Ali Bhatti",
+      "email": "AliBhatti@company.com",
+      "password_hash": "pbkdf2$210000$909fa8f08ebfb449aa40a8003f806621$5f08860f683b3cadde54ed4cbea80be693d5b21f75c624f1b44b5547b7ab6a57"
+    },
+    {
+      "name": "Sajjad Ashraf",
+      "email": "SajjadAshraf@company.com",
+      "password_hash": "pbkdf2$210000$059b400615ec8c8c67431941112653f2$2d701efff6b8220e5bc42b660c957471921bf44783e731505d1aee690b2e0a9d"
+    },
+    {
+      "name": "Sana Zahid",
+      "email": "SanaZahid@company.com",
+      "password_hash": "pbkdf2$210000$b622758ab98a06c718f78f6f3fa6d8f0$05ad0c351c41ba4340ac8cd0a7202b91d05a8a61ff3f93294c989f68cd31d3d0"
+    },
+    {
+      "name": "Umair Malik",
+      "email": "UmairMAlik@company.com",
+      "password_hash": "pbkdf2$210000$809cc538f795abd84226aa31f70c195d$a61b56c9c024bd68e3b67de172d0d86e4a51b7103b93aaa8daa85ebd004fa427"
     },
     {
       "name": "Waleed Khan",
       "email": "WaleedKhan@company.com",
-      "password_hash": "pbkdf2$210000$d245170c151bade87da51d6d545a6f31$6c0a00cfc8d0b7ae8160d4a1f6691cb6e95096e0423512e83ca08ca183c865af"
+      "password_hash": "pbkdf2$210000$cac7f26433eaecb29737402de0dee5cf$306938783bd53b009be18fd36c667bac00e435214c2cf8682481ee926db6bab9"
     },
     {
-      "name": "Aqleema Paras",
-      "email": "AqleemaParas@company.com",
-      "password_hash": "pbkdf2$210000$1ce75a5c8656ab584a3dec346ef3ca3b$58545fcb2ce9c53da166bd4195615660125037d69bfe9ea25fa858a06e650cec"
-    },
-    {
-      "name": "Usama Bashir",
-      "email": "UsamaBashir@company.com",
-      "password_hash": "pbkdf2$210000$2d7ca0702e58be10335222b75be46e5b$25122fb209d88867f47292b7d8255e65202bf0d59f78afec92fbc19963da28e2"
-    },
-    {
-      "name": "Temoor Hussain",
-      "email": "TemoorHussain@company.com",
-      "password_hash": "pbkdf2$210000$5225f78206e6487a86cde939277dc840$c0916ae85eb92a84a53e4d1d62994024e06c7cbcb4c53719e6f4662588197383"
+      "name": "Waqas Ahmed",
+      "email": "WaqasAhmed@company.com",
+      "password_hash": "pbkdf2$210000$c87f65646adb249f4fb451f33378c43c$47a0cd669d77725e4d6d6e6dd0e1097800669a215ca038dd76f09965b6e37ab0"
     }
   ]
 }
