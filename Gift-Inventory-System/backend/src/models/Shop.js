@@ -11,7 +11,7 @@ const ShopSchema = schema({
   address: { type: String, default: undefined, maxlength: 300 },
   owner_name: { type: String, default: undefined },
   contact: { type: String, default: undefined },
-  promoter_id: ref('User'),
+  promoter_ids: ref('User'),
   status,
   qr_generated_at: ts,
   qr_version: { type: Number, min: 0 },
@@ -21,9 +21,9 @@ const ShopSchema = schema({
 ShopSchema.index({ shop_id: 1 }, { unique: true });
 ShopSchema.index({ city_id: 1 });
 ShopSchema.index({ market_id: 1 });
-ShopSchema.index({ promoter_id: 1 });
+ShopSchema.index({ promoter_ids: 1 });
 link(ShopSchema, 'city', 'City', 'city_id');
 link(ShopSchema, 'market', 'Market', 'market_id');
-link(ShopSchema, 'promoter', 'User', 'promoter_id');
+link(ShopSchema, 'promoter', 'User', 'promoter_ids');
 
 module.exports = model('Shop', ShopSchema);
