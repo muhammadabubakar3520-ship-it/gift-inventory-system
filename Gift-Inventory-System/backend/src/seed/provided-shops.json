@@ -1,5 +1,8 @@
+
 {
-  "note": "Shop records generated from the updated spreadsheet. Duplicate shop IDs are preserved because the sheet assigns different promoters to the same shop ID. Blank source fields remain blank.",
+  "note": "Shop records imported from the latest Excel sheet dated 2026-10-10. Blank fields remain empty. Duplicate shop IDs are preserved because the spreadsheet assigns different promoters to the same shop.",
+  "gift_stock": 35,
+  "allocate_each": 5,
   "shops": [
     {
       "shop_id": "PK412052",
