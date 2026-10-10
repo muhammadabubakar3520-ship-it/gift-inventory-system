@@ -6,19 +6,25 @@ import Icon from '../Icon';
 import { toast, toastError } from '../Toasts';
 import { api } from '../../services/api';
 import { useLookups } from '../../context/LookupsContext';
-import { cityOpts, marketOpts, promoterOpts } from './options';
+import { cityOpts, marketOpts } from './options';
 import { promptText } from './shop-widgets';
 
 const str = (v) => (v === null || v === undefined ? '' : String(v));
+/** Promoters of a shop as a list of id strings. Works with one promoter (promoter_id) and with several (promoter_ids). */
+const idsOf = (s) => (Array.isArray(s.promoter_ids) && s.promoter_ids.length ? s.promoter_ids : s.promoter_id ? [s.promoter_id] : []).map(String);
 
 function ShopFormModal({ shop, onClose, onSaved }) {
   const { lk, loadLookups } = useLookups();
   const s = shop || { status: 'active' };
   const [f, setF] = useState({
     shop_id: s.shop_id || '', shop_name: s.shop_name || '', city_id: str(s.city_id), market_id: str(s.market_id),
-    address: s.address || '', promoter_id: str(s.promoter_id), status: s.status || 'active',
+    address: s.address || '', promoter_ids: idsOf(s), status: s.status || 'active',
   });
   const set = (k) => (e) => { const v = e.target.value; setF((x) => ({ ...x, [k]: v })); };
+
+  const togglePromoter = (id) => setF((x) => ({ ...x, promoter_ids: x.promoter_ids.includes(id) ? x.promoter_ids.filter((p) => p !== id) : [...x.promoter_ids, id] }));
+  // active promoters, plus any inactive one that is already assigned to this shop
+  const promoters = lk.promoters.filter((p) => p.status === 'active' || f.promoter_ids.includes(String(p.id)));
 
   const changeCity = (e) => { const v = e.target.value; setF((x) => ({ ...x, city_id: v, market_id: '' })); };
 
@@ -49,6 +55,8 @@ function ShopFormModal({ shop, onClose, onSaved }) {
 
   const save = async () => {
     const body = { ...f };
+    body.promoter_ids = f.promoter_ids.map(Number);
+    body.promoter_id = body.promoter_ids[0] || null; // first promoter, for servers that store one promoter per shop
     if (!body.shop_name.trim()) return toast('Shop name is required', 'warn');
     body.shop_id = (body.shop_id || '').trim().toUpperCase().replace(/\s+/g, '');
     if (body.shop_id && (!/^[A-Z0-9][A-Z0-9-]{1,19}$/.test(body.shop_id) || !/[A-Z]/.test(body.shop_id))) return toast('Shop ID must be 2–20 letters, numbers or dashes with at least one letter (e.g. PK413451)', 'warn');
@@ -81,8 +89,16 @@ function ShopFormModal({ shop, onClose, onSaved }) {
           <div className="row"><select className="select" name="market_id" id="sfMarket" value={f.market_id} onChange={set('market_id')}>{marketOpts(lk, f.city_id || -1, f.city_id ? 'Select market' : 'Select a city first')}</select>
             <button className="btn sm" type="button" id="sfNewMarket" title="Add a market to this city" onClick={newMarket}><Icon name="plus" /></button></div></div>
         <div className="field full"><label>Shop address</label><input className="input" name="address" value={f.address} onChange={set('address')} maxLength={250} /></div>
-        <div className="field"><label>Assigned promoter</label><select className="select" name="promoter_id" value={f.promoter_id} onChange={set('promoter_id')}>{promoterOpts(lk, 'Not assigned', true, s.promoter_id)}</select>
-          <div className="hint">Only the assigned promoter can submit sales for this shop.</div></div>
+        <div className="field"><label>Assigned promoters{f.promoter_ids.length ? ` (${f.promoter_ids.length})` : ''}</label>
+          <div id="sfPromoters" style={{ maxHeight: 150, overflowY: 'auto', border: '1px solid var(--line, #d7dce5)', borderRadius: 8, padding: '6px 10px' }}>
+            {promoters.length ? promoters.map((p) => (
+              <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', fontWeight: 400, cursor: 'pointer' }}>
+                <input type="checkbox" name="promoter_ids" value={p.id} checked={f.promoter_ids.includes(String(p.id))} onChange={() => togglePromoter(String(p.id))} />
+                <span>{p.name}{p.status !== 'active' ? ' (inactive)' : ''}</span>
+              </label>
+            )) : <span className="muted">No promoters yet</span>}
+          </div>
+          <div className="hint">Tick every promoter who works at this shop. Only assigned promoters can submit sales for it. Leave all unticked for "Not assigned".</div></div>
         <div className="field"><label>Status</label><select className="select" name="status" value={f.status} onChange={set('status')}>
           <option value="active">Active</option><option value="inactive">Inactive</option></select></div>
       </div>
