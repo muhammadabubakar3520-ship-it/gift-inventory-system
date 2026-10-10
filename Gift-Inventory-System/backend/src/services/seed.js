@@ -301,6 +301,44 @@ module.exports = function register(G) {
   };
 
   /* -----------------------------------------------------
+     SEVERAL PROMOTERS PER SHOP
+  ----------------------------------------------------- */
+
+  /**
+   * Give every shop a promoter list (promoter_ids) built from
+   * its single promoter (promoter_id). Shops that already have
+   * a list are left alone. Returns how many shops were changed.
+   */
+  G.convertShopPromoters = () => {
+    let converted = 0;
+
+    for (const shop of S.shops) {
+      if (Array.isArray(shop.promoter_ids)) {
+        // keep promoter_id in step with the list
+        const first = shop.promoter_ids[0] || null;
+
+        if (
+          shop.promoter_ids.length &&
+          (shop.promoter_id || null) !== first
+        ) {
+          shop.promoter_id = first;
+          converted++;
+        }
+
+        continue;
+      }
+
+      shop.promoter_ids = shop.promoter_id
+        ? [Number(shop.promoter_id)]
+        : [];
+
+      converted++;
+    }
+
+    return converted;
+  };
+
+  /* -----------------------------------------------------
      INITIAL DATABASE
   ----------------------------------------------------- */
 
@@ -341,7 +379,8 @@ module.exports = function register(G) {
         shopIdsPK: true,
         shopsCleared1: true,
         noApproval1: true,
-        shopsAdded2: true
+        shopsAdded2: true,
+        promoterIds1: true
       };
 
       if (config.SEED_DATA) {
@@ -399,6 +438,30 @@ module.exports = function register(G) {
         DATA.PROMOTER_LOGINS.version
     ) {
       G.applyPromoterLogins();
+    }
+
+    /*
+     * One-time upgrade: a shop can have several promoters.
+     * Copy each shop's single promoter (promoter_id) into the
+     * promoter list (promoter_ids). Nothing is removed, so the
+     * current assignments stay exactly as they are.
+     */
+    if (!S.flags.promoterIds1) {
+      const converted = G.convertShopPromoters();
+
+      S.flags.promoterIds1 = true;
+
+      G.audit(
+        null,
+        'shops_assigned',
+        'system',
+        null,
+        {
+          via: 'upgrade: several promoters per shop',
+          shops: S.shops.length,
+          converted
+        }
+      );
     }
 
     /*
