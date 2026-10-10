@@ -3,9 +3,11 @@
 module.exports = function register(G) {
   const { S, R } = G;
   const A = () => G.Analytics;
+  /** Is this shop assigned to this user? Works with one promoter (promoter_id) and with several (promoter_ids). */
+  const hasShop = (shop, u) => shop.promoter_id === u.id || (Array.isArray(shop.promoter_ids) && shop.promoter_ids.includes(u.id));
 
   function userView(u) {
-    const shops = S.shops.filter((s) => s.promoter_id === u.id);
+    const shops = S.shops.filter((s) => hasShop(s, u));
     const tx = S.txns.filter((t) => t.promoter_id === u.id);
     const sold = tx.filter(G.isCounted);
     const open = tx.filter((t) => A().isOpen(t.status));
@@ -27,7 +29,7 @@ module.exports = function register(G) {
   });
   R('GET', '/users/:id', 'admin', ({ params }) => {
     const u = findUser(params.id);
-    const shops = S.shops.filter((s) => s.promoter_id === u.id).map((s) => G.shopView(s)).map((s) => ({ id: s.id, shop_id: s.shop_id, shop_name: s.shop_name, status: s.status, city_name: s.city_name, market_name: s.market_name }));
+    const shops = S.shops.filter((s) => hasShop(s, u)).map((s) => G.shopView(s)).map((s) => ({ id: s.id, shop_id: s.shop_id, shop_name: s.shop_name, status: s.status, city_name: s.city_name, market_name: s.market_name }));
     return { user: userView(u), shops };
   });
   function readUserBody(b, isNew) {
@@ -56,7 +58,7 @@ module.exports = function register(G) {
     const u = findUser(params.id);
     const b = readUserBody(body, false);
     if (S.users.some((x) => x.id !== u.id && G.ieq(x.email, b.email))) throw G.conflict('A user with this email already exists');
-    if (u.role !== b.role && S.shops.some((s) => s.promoter_id === u.id)) throw G.conflict("Unassign this promoter's shops before changing the role");
+    if (u.role !== b.role && S.shops.some((s) => hasShop(s, u))) throw G.conflict("Unassign this promoter's shops before changing the role");
     if (u.role === 'admin' && u.status === 'active' && (b.role !== 'admin' || b.status !== 'active') && activeAdmins() <= 1) throw G.conflict('At least one active admin is required');
     if (u.id === user.id && b.status !== 'active') throw G.bad('You cannot deactivate your own account');
     if (b.status !== u.status || b.role !== u.role) u.token_version++;
@@ -92,7 +94,7 @@ module.exports = function register(G) {
       const r = by.get(u.id) || { units: 0, gifts: 0, txns: 0, shops: 0, ratio: null };
       const mine = all.filter((t) => t.promoter_id === u.id);
       return { promoter_id: u.id, user_code: u.user_code, name: u.name, status: u.status, phone: u.phone,
-        shops_assigned: S.shops.filter((s) => s.promoter_id === u.id && (!q.city_id || s.city_id === Number(q.city_id))).length,
+        shops_assigned: S.shops.filter((s) => hasShop(s, u) && (!q.city_id || s.city_id === Number(q.city_id))).length,
         shops_sold: r.shops, mobile_units: r.units, gifts_given: r.gifts, ratio: r.ratio, transactions: r.txns,
         approved: mine.filter((t) => t.status === 'approved').length, open: mine.filter((t) => A().isOpen(t.status)).length, rejected: mine.filter((t) => t.status === 'rejected').length,
         last_activity: mine.reduce((m, t) => (t.created_at > (m || '') ? t.created_at : m), null) };
@@ -108,11 +110,11 @@ module.exports = function register(G) {
     const u = findUser(params.id);
     if (u.role !== 'promoter') throw G.notFound('Promoter');
     const sold = G.salesRows(query, (t) => t.promoter_id === u.id);
-    const assigned = S.shops.filter((s) => s.promoter_id === u.id).map((s) => G.shopView(s));
+    const assigned = S.shops.filter((s) => hasShop(s, u)).map((s) => G.shopView(s));
     const byShop = new Map(A().byShop(sold).map((r) => [r.shop_pk, r]));
     const shops = [...new Set([...assigned.map((s) => s.id), ...byShop.keys()])].map((id) => {
       const s = G.shopView(G.byId('shops', id)); const r = byShop.get(id) || { units: 0, gifts: 0, txns: 0, ratio: null };
-      return { shop_pk: s.id, shop_id: s.shop_id, shop_name: s.shop_name, city_name: s.city_name, market_name: s.market_name, status: s.status, assigned: s.promoter_id === u.id, units: r.units, gifts: r.gifts, txns: r.txns, ratio: r.ratio };
+      return { shop_pk: s.id, shop_id: s.shop_id, shop_name: s.shop_name, city_name: s.city_name, market_name: s.market_name, status: s.status, assigned: hasShop(s, u), units: r.units, gifts: r.gifts, txns: r.txns, ratio: r.ratio };
     }).sort((a, b) => b.units - a.units || a.shop_name.localeCompare(b.shop_name));
     const recent = S.txns.filter((t) => t.promoter_id === u.id).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 15).map(G.txnView);
     return { user: userView(u), summary: A().summary(sold), brands: A().brandTree(sold), models: A().byModel(sold), gifts: A().byGift(sold), shops,
