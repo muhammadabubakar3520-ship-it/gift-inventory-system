@@ -8,6 +8,8 @@
 module.exports = function register(G) {
   const { S, R } = G;
   const A = () => G.Analytics;
+  /** Is this shop assigned to this promoter? Works with one promoter (promoter_id) and with several (promoter_ids). */
+  const isMine = (shop, user) => shop.promoter_id === user.id || (Array.isArray(shop.promoter_ids) && shop.promoter_ids.includes(user.id));
 
   /* ---------- admin: list / detail ---------- */
   function filterTxns(q, skipStatus) {
@@ -95,13 +97,13 @@ module.exports = function register(G) {
     if (!raw || raw.length > 40) throw G.bad('This is not a valid Shop QR code. Please scan the QR code of your assigned shop.');
     const s = G.resolveShopCode(raw);
     if (!s) throw G.notFound(`Shop ${raw}`);
-    if (s.promoter_id !== user.id) throw G.forbidden('is this promoter in the shop’s list. Please scan the QR code of your assigned shop.');
+    if (!isMine(s, user)) throw G.forbidden('This shop is not assigned to you. Please scan the QR code of your assigned shop.');
     if (s.status !== 'active') throw G.bad(`${s.shop_id} is inactive. Sales cannot be recorded for this shop.`);
     return { shop: pShop(s), gifts: shopGifts(s.id) };
   });
   R('GET', '/promoter/shops', 'promoter', ({ query, user }) => {
     const s = G.like(query.search);
-    return S.shops.filter((x) => x.promoter_id === user.id && x.status === 'active').map((x) => {
+    return S.shops.filter((x) => isMine(x, user) && x.status === 'active').map((x) => {
       const v = pShop(x);
       const available = S.inv.filter((i) => i.shop_id === x.id).reduce((a, i) => a + i.allocated_quantity - i.distributed_quantity - i.pending_quantity, 0);
       const last = S.txns.filter((t) => t.shop_id === x.id && t.promoter_id === user.id).reduce((m, t) => (t.created_at > (m || '') ? t.created_at : m), null);
@@ -129,7 +131,7 @@ module.exports = function register(G) {
     // every check below runs after the async photo reads, without interruption
     const shop = S.shops.find((x) => G.ieq(x.shop_id, shopCode)); if (!shop) throw G.notFound('Shop');
     if (shop.status !== 'active') throw G.bad('This shop is inactive. Sales cannot be recorded.');
-    if (shop.promoter_id !== user.id) throw G.forbidden('is this promoter in the shop’s list. Please scan the QR code of your assigned shop.');
+    if (!isMine(shop, user)) throw G.forbidden('This shop is not assigned to you. Please scan the QR code of your assigned shop.');
     const brand = G.byId('brands', brandId); if (!brand) throw G.bad('Please select the mobile brand');
     if (brand.status !== 'active') throw G.bad(`${brand.brand_name} is not active. Select another brand.`);
     const model = G.byId('models', modelId); if (!model) throw G.bad('Please select the mobile model');
@@ -185,7 +187,7 @@ module.exports = function register(G) {
       name: user.name, today: A().summary(td), month: A().summary(mo), total: A().summary(sold),
       top_brands: A().byBrand(mo.length ? mo : sold).slice(0, 5).map((b) => ({ brand_name: b.brand_name, units: b.units })), top_brands_period: mo.length ? 'month' : 'all',
       open: all.filter((t) => A().isOpen(t.status)).length, rejected: all.filter((t) => t.status === 'rejected').length,
-      active_shops: S.shops.filter((s) => s.promoter_id === user.id && s.status === 'active').length,
+      active_shops: S.shops.filter((s) => isMine(s, user) && s.status === 'active').length,
       recent: all.slice().sort(byTime('desc')).slice(0, 5).map(pTxn), mode: G.salesMode(),
     };
   });
@@ -196,7 +198,7 @@ module.exports = function register(G) {
       { brand_id: query.brand_id, model_id: query.model_id, shop_id: query.shop_id, city_id: query.city_id, market_id: query.market_id });
     const everything = mine(user).map(G.txnView);
     const opts = (key, label) => [...new Map(everything.filter((t) => t[key]).map((t) => [t[key], { id: t[key], name: label(t) }])).values()].sort((a, b) => a.name.localeCompare(b.name));
-    const shops = S.shops.filter((s) => s.promoter_id === user.id).map((s) => G.shopView(s));
+    const shops = S.shops.filter((s) => isMine(s, user)).map((s) => G.shopView(s));
     return { summary: A().summary(rows), brands: A().brandTree(rows), models: A().byModel(rows), shops: A().byShop(rows),
       filters: {
         brands: opts('brand_pk', (t) => t.brand_name), models: opts('model_pk', (t) => `${t.model_name}${t.brand_name ? ' · ' + t.brand_name : ''}`),
@@ -213,7 +215,7 @@ module.exports = function register(G) {
       const rows = all.filter((t) => t.gift_pk === g.gift_pk);
       return { ...g, given: g.gifts, approved: G.sum(rows.filter((t) => t.status === 'approved'), 'quantity'), waiting: G.sum(rows.filter((t) => A().isOpen(t.status)), 'quantity') };
     });
-    const myShops = S.shops.filter((s) => s.promoter_id === user.id).map((s) => s.id);
+    const myShops = S.shops.filter((s) => isMine(s, user)).map((s) => s.id);
     const inv = new Map();
     for (const i of S.inv) {
       if (!myShops.includes(i.shop_id) || !i.allocated_quantity) continue;
