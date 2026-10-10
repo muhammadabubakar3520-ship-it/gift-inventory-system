@@ -95,7 +95,7 @@ module.exports = function register(G) {
     if (!raw || raw.length > 40) throw G.bad('This is not a valid Shop QR code. Please scan the QR code of your assigned shop.');
     const s = G.resolveShopCode(raw);
     if (!s) throw G.notFound(`Shop ${raw}`);
-    if (s.promoter_id !== user.id) throw G.forbidden('This shop is not assigned to you. Please scan the QR code of your assigned shop.');
+    if (s.promoter_id !== user.id) throw G.forbidden('is this promoter in the shop’s list. Please scan the QR code of your assigned shop.');
     if (s.status !== 'active') throw G.bad(`${s.shop_id} is inactive. Sales cannot be recorded for this shop.`);
     return { shop: pShop(s), gifts: shopGifts(s.id) };
   });
@@ -129,7 +129,7 @@ module.exports = function register(G) {
     // every check below runs after the async photo reads, without interruption
     const shop = S.shops.find((x) => G.ieq(x.shop_id, shopCode)); if (!shop) throw G.notFound('Shop');
     if (shop.status !== 'active') throw G.bad('This shop is inactive. Sales cannot be recorded.');
-    if (shop.promoter_id !== user.id) throw G.forbidden('This shop is not assigned to you. Please scan the QR code of your assigned shop.');
+    if (shop.promoter_id !== user.id) throw G.forbidden('is this promoter in the shop’s list. Please scan the QR code of your assigned shop.');
     const brand = G.byId('brands', brandId); if (!brand) throw G.bad('Please select the mobile brand');
     if (brand.status !== 'active') throw G.bad(`${brand.brand_name} is not active. Select another brand.`);
     const model = G.byId('models', modelId); if (!model) throw G.bad('Please select the mobile model');
