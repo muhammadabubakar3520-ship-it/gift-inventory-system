@@ -70,6 +70,12 @@
       "password_hash": "pbkdf2$210000$c3ea5bf2cd9282db3cead60a68be5b63$5bc08ae8d58170c87adf3247e445beeb4afb012564e81559df8b781a6c26cad9"
     },
     {
+      "name": "Joven",
+      "email": "joven@company.com",
+      "role": "admin",
+      "password_hash": "$2b$12$9KGg7xYhd.I/HcjsyxMnF.cuJGPdKCqWHKox2Ip9MJrWefGlHYMn6"
+    },
+    {
       "name": "Danial",
       "email": "Danial@company.com",
       "password_hash": "pbkdf2$210000$78c87d2cfec12fbe33001fc5040b0c5b$4da2c21bf68da4f3d208f1c805c592daa3475a9f9b402ebed9f78da2ad3c93cb"
