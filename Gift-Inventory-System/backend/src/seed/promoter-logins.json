@@ -29,12 +29,6 @@
       "email": "WaleedKhan@company.com",
       "password_hash": "pbkdf2$210000$61223a70091af16e9771d374bd8f1289$1307b3f4b2a1d098e71373c25257b78c26c3dac4fca8d1169642ded17ae9d3cf"
     },
-        {
-      "name": "Irfan",
-      "email": "irfan@company.com",
-      "role": "admin",
-      "password_hash": "$2b$12$tzwFO80RLuBzaPEO4rKgQ.6XKA8g0VFH.mYY5t8y.iGbv9cP3EPue"
-    },
     {
       "name": "Aqleema Paras",
       "email": "AqleemaParas@company.com",
