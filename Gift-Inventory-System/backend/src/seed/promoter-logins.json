@@ -35,6 +35,11 @@
       "password_hash": "pbkdf2$210000$1ce75a5c8656ab584a3dec346ef3ca3b$58545fcb2ce9c53da166bd4195615660125037d69bfe9ea25fa858a06e650cec"
     },
     {
+      "name": "M.Waqas",
+      "email": "Waqas@company.com",
+      "password_hash": "pbkdf2$210000$ae410fd958cf40ed0794a7c051a17e02$faa80d789907f4ce07c5dd92250f07de176b097a632008abc9e06a8ee39c0891"
+    },
+    {
       "name": "Usama Bashir",
       "email": "UsamaBashir@company.com",
       "password_hash": "pbkdf2$210000$2d7ca0702e58be10335222b75be46e5b$25122fb209d88867f47292b7d8255e65202bf0d59f78afec92fbc19963da28e2"
