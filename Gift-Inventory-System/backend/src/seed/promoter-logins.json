@@ -42,7 +42,7 @@
     {
       "name": "Temoor Hussain",
       "email": "TemoorHussain@company.com",
-      "password_hash": "pbkdf2$210000$5225f78206e6487a86cde939277dc840$c0916ae85eb92a84a53e4d1d62994024e06c7cbcb4c53719e6f4662588197383"
+      "password_hash": "pbkdf2$210000$4f7c5ef1cc8413c01bbf220973f98342$5dce42e5b9dbf7eabdfc5545a36746edcd13b1feddbbcef6382cb13a984736bf"
     },
     {
       "name": "Azan Nasir",
@@ -109,6 +109,51 @@
       "name": "Abdul Rehman",
       "email": "AbdulRehman@company.com",
       "password_hash": "pbkdf2$210000$2c568614afb9344aef045238a2fd935b$49ebe25f45c9d6e7d9d26df3f94d09d9387efd11317831b7b2a0a56028cfd077"
+    },
+    {
+      "name": "M.Waqas",
+      "email": "Waqas@company.com",
+      "password_hash": "pbkdf2$210000$2664b3c90bf9f25f1e5e8ce0d33d8538$a0e82c04d343dc8bac0e61d978c72936fc1c7cd87a54bcbc9935104cbe66b473"
+    },
+    {
+      "name": "Arman Saleem",
+      "email": "ArmanSaleem@company.com",
+      "password_hash": "pbkdf2$210000$51320c957a298f93601ebdd91fe6cefa$ac8c3a21171c0f7c4c526d471c063eb04fc81de9168dcf7f850b3c506210574f"
+    },
+    {
+      "name": "Umair Haider",
+      "email": "UmairHaider@company.com",
+      "password_hash": "pbkdf2$210000$6826b5a16adae93f5393a16f9a656f18$6919a9d3dcd61af896f6b0a06d09d712c3c876b274ee1e28f8290201afcc1fc1"
+    },
+    {
+      "name": "Hamza Ilyas",
+      "email": "HamzaIlyas@company.com",
+      "password_hash": "pbkdf2$210000$0036a23a2b5d4b1810ec1685ceb185e9$29664a2aa792d6e68753aa8bbf3213705cfe84f4f0c908f60dbebd029b1189cf"
+    },
+    {
+      "name": "Ali Hassan Yousaf",
+      "email": "AliHassan@company.com",
+      "password_hash": "pbkdf2$210000$c9a8312f47d2552aafe55149f707708b$13d4e70d5d7f670218b427c3d0c111cf5b01227d3411620492351c56ff667675"
+    },
+    {
+      "name": "Nabeel Shakeel",
+      "email": "NabeelShakeel@company.com",
+      "password_hash": "pbkdf2$210000$66382bae1b74c84240469c839f9623d3$dbff67a5376b75308ce51afbc67edb643deadd610e3868cda1868e6ddc06ef5e"
+    },
+    {
+      "name": "Arslan Rauf",
+      "email": "ArslanRauf@company.com",
+      "password_hash": "pbkdf2$210000$9388b6dcca2118415b6774cecd6691e7$9ff447e0eb6f4bc3c141cba31138cccacbc62004ec4c7a2886649b5d8d5dbd62"
+    },
+    {
+      "name": "Haroon",
+      "email": "Haroon@company.com",
+      "password_hash": "pbkdf2$210000$f2f7bccc10e16307ccfef5c4380dd0c2$1e54a4cac6f03a08428f8f61dbdf7c5c2e4b90d5682bdbe173536c73c380c7bb"
+    },
+    {
+      "name": "Hassan Mehmood",
+      "email": "HassanMehmood@company.com",
+      "password_hash": "pbkdf2$210000$8f80020070c84583c86735c1d631af0b$b74c87124697da618ed15e99a6900fee5f15da6744cbc4408c9a47d1cff4f7d3"
     }
   ]
 }
