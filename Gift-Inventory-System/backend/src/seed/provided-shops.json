@@ -25,6 +25,127 @@
       "promoter_email": "UmairMAlik@company.com",
       "status": "active"
     },
+        {
+      "shop_id": "PK410737",
+      "shop_name": "Ali Mobile Hall Road",
+      "city": "Lahore",
+      "market": "Hall road",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "Waqas@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413407",
+      "shop_name": "Gulberg Mobile",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "Adnan@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK400070",
+      "shop_name": "Infinix Outlet Kareem park",
+      "city": "Lahore",
+      "market": "Karim park Ravi road",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "ArmanSaleem@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK48233",
+      "shop_name": "Ideal Mobile",
+      "city": "Lahore",
+      "market": "Township",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "UmairHaider@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK026728",
+      "shop_name": "HOLY STAR SHALIMAR",
+      "city": "Lahore",
+      "market": "Shalimar Link Road",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "HamzaIlyas@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK413423",
+      "shop_name": "Rabta Mobile",
+      "city": "Lahore",
+      "market": "Hafeez Center",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "TemoorHussain@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK4995931",
+      "shop_name": "Yasir Mobile (Younis Mobile IB)",
+      "city": "Lahore",
+      "market": "SHALIMAR LINK ROAD",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "AliHassan@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK48337",
+      "shop_name": "Madina Mobile",
+      "city": "Lahore",
+      "market": "Royal arcade",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "NabeelShakeel@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK48699",
+      "shop_name": "GM Mobile",
+      "city": "Lahore",
+      "market": "Hall road",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "ArslanRauf@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK402129",
+      "shop_name": "Bismillah Mobile",
+      "city": "Lahore",
+      "market": "Shadbagh",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "Haroon@company.com",
+      "status": "active"
+    },
+    {
+      "shop_id": "PK400797",
+      "shop_name": "Younis Mobile Yateem Khana",
+      "city": "Lahore",
+      "market": "Yateem khana",
+      "address": "",
+      "owner_name": "",
+      "contact": "",
+      "promoter_email": "HassanMehmood@company.com",
+      "status": "active"
+    }
     {
       "shop_id": "PK411566",
       "shop_name": "ZS mobile",
