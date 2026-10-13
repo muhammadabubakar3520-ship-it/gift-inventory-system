@@ -59,6 +59,11 @@
       "email": "AliBhatti@company.com",
       "password_hash": "pbkdf2$210000$31e1bd4d6239fc5807fdda054cd13d66$040f2c357c644b21baf02eb86664dc6b286e41997978a19922370edfc14731a8"
     },
+        {
+      "name": "Ali Hassan",
+      "email": "AliHassan@gmail.com",
+      "password_hash": "pbkdf2$210000$65baa6579de5b2a69ae6f7845b23054d$52620421ebb8c597ee9fa8aeacf1d420815cab9c5690eb68e1aedbaca6343686"
+    },
     {
       "name": "M.Khalid",
       "email": "Khalid@company.com",
