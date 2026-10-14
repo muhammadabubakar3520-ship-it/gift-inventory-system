@@ -64,22 +64,30 @@ function promoterLogins() {
 
   const data = JSON.parse(fs.readFileSync(file, 'utf8'));
 
-  const promoters = (data.promoters || []).map((user) => ({
+  const accounts = [
+    ...(data.admins || []).map((user) => ({ ...user, role: 'admin' })),
+    ...(data.promoters || []).map((user) => ({
+      ...user,
+      role: user.role === 'admin' ? 'admin' : 'promoter'
+    }))
+  ].map((user) => ({
     name: user.name,
     email: String(user.email).toLowerCase(),
+    role: user.role,
     password_hash:
       user.password_hash || hashFor(user.password, user.email)
   }));
 
   const version = crypto
     .createHash('sha256')
-    .update(JSON.stringify(promoters))
+    .update(JSON.stringify(accounts))
     .digest('hex')
     .slice(0, 16);
 
   return {
     version,
-    promoters
+    accounts,
+    promoters: accounts.filter((user) => user.role === 'promoter')
   };
 }
 
@@ -232,6 +240,106 @@ module.exports = function register(G) {
     return changed;
   };
 
+  G.seedFixedAccounts = () => {
+    let created = 0;
+
+    for (const account of (DATA.PROMOTER_LOGINS && DATA.PROMOTER_LOGINS.accounts) || []) {
+      const email = account.email.trim().toLowerCase();
+      if (S.users.some((user) => G.ieq(user.email, email))) continue;
+
+      const role = account.role === 'admin' ? 'admin' : 'promoter';
+      const userCode = role === 'admin'
+        ? G.freeCode('admin', (code) => S.users.some((user) => user.user_code === code))
+        : G.freeCode('promoter', (code) => S.users.some((user) => user.user_code === code));
+
+      G.insert('users', {
+        user_code: userCode,
+        name: account.name,
+        email,
+        phone: null,
+        password_hash: account.password_hash,
+        role,
+        status: 'active',
+        token_version: 0,
+        last_login_at: null,
+        created_at: G.now(),
+        updated_at: G.now()
+      });
+      created++;
+    }
+
+    if (created) {
+      G.audit(null, 'users_seeded', 'user', null, {
+        via: 'fixed login data',
+        created
+      });
+    }
+
+    S.flags.promoterLogins = DATA.PROMOTER_LOGINS
+      ? DATA.PROMOTER_LOGINS.version
+      : null;
+
+    return created;
+  };
+
+  G.addProvidedShops = () => {
+    if (!DATA.PROVIDED_SHOPS || S.flags.providedShops1) return 0;
+
+    const grouped = new Map();
+    for (const row of DATA.PROVIDED_SHOPS.shops || []) {
+      const shopId = String(row.shop_id || '').trim().toUpperCase();
+      if (!shopId) continue;
+      const shop = grouped.get(shopId) || { ...row, shop_id: shopId, promoter_emails: [] };
+      if (row.promoter_email) shop.promoter_emails.push(String(row.promoter_email).trim().toLowerCase());
+      grouped.set(shopId, shop);
+    }
+
+    let created = 0;
+    for (const shopData of grouped.values()) {
+      const { city, market } = G.ensureCityMarket(shopData.city, shopData.market);
+      const promoterIds = [...new Set(shopData.promoter_emails.map((email) => {
+        const promoter = S.users.find((user) => user.role === 'promoter' && G.ieq(user.email, email));
+        if (!promoter) throw new Error(`Provided shop ${shopData.shop_id} refers to missing promoter ${email}.`);
+        return promoter.id;
+      }))];
+      const existing = S.shops.find((shop) => G.ieq(shop.shop_id, shopData.shop_id));
+
+      if (existing) {
+        const assigned = new Set(G.shopPromoterIds(existing));
+        existing.promoter_ids = [...new Set([...assigned, ...promoterIds])];
+        existing.promoter_id = existing.promoter_ids[0] || null;
+        continue;
+      }
+
+      G.insert('shops', {
+        shop_id: shopData.shop_id,
+        shop_name: shopData.shop_name,
+        city_id: city.id,
+        market_id: market.id,
+        address: shopData.address || null,
+        owner_name: shopData.owner_name || null,
+        contact: shopData.contact || null,
+        promoter_id: promoterIds[0] || null,
+        promoter_ids: promoterIds,
+        status: shopData.status || 'active',
+        qr_generated_at: G.now(),
+        qr_version: 1,
+        created_at: G.now(),
+        updated_at: G.now()
+      });
+      created++;
+    }
+
+    S.flags.providedShops1 = true;
+    if (created) {
+      G.audit(null, 'shops_seeded', 'shop', null, {
+        via: 'provided shop data',
+        created
+      });
+    }
+    return created;
+  };
+
   /* -----------------------------------------------------
      ENVIRONMENT ADMIN
   ----------------------------------------------------- */
@@ -371,6 +479,8 @@ module.exports = function register(G) {
         config.ADMIN_PASSWORD
       );
 
+      G.seedFixedAccounts();
+
       S.flags = {
         noOwnerContact: true,
         modelsAdded: true,
@@ -393,6 +503,8 @@ module.exports = function register(G) {
           G.addProvidedShops();
         }
       }
+
+      G.addProvidedShops();
 
       S.flags.promoterLogins =
         DATA.PROMOTER_LOGINS
@@ -438,7 +550,11 @@ module.exports = function register(G) {
         DATA.PROMOTER_LOGINS.version
     ) {
       G.applyPromoterLogins();
+      G.seedFixedAccounts();
     }
+
+    G.seedFixedAccounts();
+    G.addProvidedShops();
 
     /*
      * One-time upgrade: a shop can have several promoters.
