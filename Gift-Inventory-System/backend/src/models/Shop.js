@@ -11,7 +11,10 @@ const ShopSchema = schema({
   address: { type: String, default: undefined, maxlength: 300 },
   owner_name: { type: String, default: undefined },
   contact: { type: String, default: undefined },
-  promoter_ids: ref('User'),
+  // main promoter (kept in step with the first entry of promoter_ids)
+  promoter_id: ref('User'),
+  // all promoters of the shop: a LIST, so a shop can have one or more promoters
+  promoter_ids: { type: [ref('User')], default: undefined },
   status,
   qr_generated_at: ts,
   qr_version: { type: Number, min: 0 },
